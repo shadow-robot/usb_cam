@@ -146,10 +146,10 @@ class UsbCam {
   int avframe_rgb_size_;
   struct SwsContext *video_sws_;
   camera_image_t *image_;
+  ros::Time last_frame_time_;
 
 };
 
 }
 
 #endif
-
