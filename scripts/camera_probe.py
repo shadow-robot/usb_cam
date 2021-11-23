@@ -16,7 +16,7 @@ from threading import Lock
 
 class CX3HubResetter:
     def __init__(self, port='/dev/ttyUSB0' ):
-        self._serial = serial.Serial(port)
+        #self._serial = serial.Serial(port)
         self._mutex = Lock()
         self._run = ['a', 's', 'd']
         self._rst = ['q', 'w', 'd']
@@ -24,17 +24,15 @@ class CX3HubResetter:
 
     def reset(self, which):
         self._mutex.acquire()
-        self._serial.write(self._rst[which])
+        #self._serial.write(self._rst[which])
         rospy.sleep(1)
-        self._serial.write(self._run[which])
+        #self._serial.write(self._run[which])
         self._mutex.release()
-
-
 
 class Test(object):
     def __init__(self, finger, hub_reset=None, try_reset=True, die_on_fail=True):
 
-
+        self._reset_count = 0
         self._hub_reset = hub_reset
 
         self._try_reset = try_reset
@@ -48,7 +46,8 @@ class Test(object):
         self._finger = finger
         self._namespace = "usb_cam_%d" % finger
 
-        self._reset = rospy.ServiceProxy("/rh_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , RhCameraReset)
+        self._reset = rospy.ServiceProxy(
+            "/rh_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , RhCameraReset)
         self._pub = rospy.Publisher("/%s/monitor" % self._namespace, Int16, queue_size=5)
 
         self._resetting = False
@@ -85,20 +84,28 @@ class Test(object):
             self._timedout = False
             self._dead = False
             self._given_up = False
+            self._reset_count = 0
 
 
     def timer_cb(self, event):
-        if not self._given_up and rospy.Time.now() - self._last_time > rospy.Duration(5):
+        if not self._given_up and rospy.Time.now() - self._last_time > rospy.Duration(10):
             self._given_up = True
             self.message("Camera %d couldn'd be reset" % self._finger, 0)
             if self._die_on_fail:
                 os.system("killall roslaunch")
                 os.system("killall python")
 
+        elif self._reset_count == 1 and rospy.Time.now() - self._last_time > rospy.Duration(3):
+            self._reset_count = 2
+            self.message("Camera %d, resetting" % self._finger, 0)
+            self._reset(20000, 2)
+
         elif not self._dead and rospy.Time.now() - self._last_time > rospy.Duration(1):
             self._dead = True
-            self.message("Camera %d died, resetting" % self._finger, 0)
-            if self._try_reset:
+            self.message("Camera %d died" % self._finger, 0)
+            if self._try_reset and self._reset_count == 0:
+                self._reset_count = 1
+                self.message("Camera %d, resetting" % self._finger, 0)
                 self._reset(20000, 2)
 
         elif rospy.Time.now() - self._last_time > rospy.Duration(1.0/40.0):
