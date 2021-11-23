@@ -1007,7 +1007,7 @@ void UsbCam::start(const std::string& dev, io_method io_method,
 		   int framerate)
 {
   camera_dev_ = dev;
-
+  error_count_ = 0;
   io_ = io_method;
   monochrome_ = false;
   if (pixel_format == PIXEL_FORMAT_YUYV)
@@ -1079,10 +1079,10 @@ void UsbCam::shutdown(void)
   image_ = NULL;
 }
 
-void UsbCam::grab_image(sensor_msgs::Image* msg)
+bool UsbCam::grab_image(sensor_msgs::Image* msg)
 {
   // grab the image
-  grab_image();
+  if (!grab_image()) return false;
   // stamp the image
   msg->header.stamp = ros::Time::now();
   // fill the info
@@ -1096,9 +1096,10 @@ void UsbCam::grab_image(sensor_msgs::Image* msg)
     fillImage(*msg, "rgb8", image_->height, image_->width, 3 * image_->width,
         image_->image);
   }
+  return true;
 }
 
-void UsbCam::grab_image()
+bool UsbCam::grab_image()
 {
   fd_set fds;
   struct timeval tv;
@@ -1123,7 +1124,7 @@ void UsbCam::grab_image()
   if (-1 == r)
   {
     if (EINTR == errno)
-      return;
+      return false;
 
     errno_exit("select");
   }
@@ -1131,12 +1132,15 @@ void UsbCam::grab_image()
   if (0 == r)
   {
 
-    ROS_ERROR("select timeout");
+    ROS_ERROR_STREAM(error_count_ ++ << ": select timeout on "  << camera_dev_);
+    return false;
     //exit(EXIT_FAILURE);
   }
-
-  read_frame();
-  image_->is_new = 1;
+  else   {
+    read_frame();
+    image_->is_new = 1;
+    return true;
+  }
 }
 
 // enables/disables auto focus

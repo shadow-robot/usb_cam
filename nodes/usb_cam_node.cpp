@@ -229,15 +229,19 @@ public:
   bool take_and_send_image()
   {
     // grab the image
-    cam_.grab_image(&img_);
+    if( cam_.grab_image(&img_))
+    {
 
-    // grab the camera info
-    sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(cinfo_->getCameraInfo()));
-    ci->header.frame_id = img_.header.frame_id;
-    ci->header.stamp = img_.header.stamp;
 
-    // publish the image
-    image_pub_.publish(img_, *ci);
+      // grab the camera info
+      sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(cinfo_->getCameraInfo()));
+      ci->header.frame_id = img_.header.frame_id;
+      ci->header.stamp = img_.header.stamp;
+
+      // publish the image
+
+      image_pub_.publish(img_, *ci);
+    }
 
     return true;
   }

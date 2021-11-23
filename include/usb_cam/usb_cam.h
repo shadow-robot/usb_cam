@@ -81,7 +81,7 @@ class UsbCam {
   void shutdown(void);
 
   // grabs a new image from the camera
-  void grab_image(sensor_msgs::Image* image);
+  bool grab_image(sensor_msgs::Image* image);
 
   // enables/disable auto focus
   void set_auto_focus(int value);
@@ -126,11 +126,12 @@ class UsbCam {
   void init_device(int image_width, int image_height, int framerate);
   void close_device(void);
   void open_device(void);
-  void grab_image();
+  bool grab_image();
   bool is_capturing_;
 
 
   std::string camera_dev_;
+  int error_count_;
   unsigned int pixelformat_;
   bool monochrome_;
   io_method io_;
