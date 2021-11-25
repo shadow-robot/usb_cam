@@ -46,8 +46,10 @@ class Test(object):
         self._finger = finger
         self._namespace = "usb_cam_%d" % finger
 
-        self._reset = rospy.ServiceProxy(
-            "/rh_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , RhCameraReset)
+        if try_reset:
+            self._reset = rospy.ServiceProxy(
+                "/rh_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , RhCameraReset)
+
         self._pub = rospy.Publisher("/%s/monitor" % self._namespace, Int16, queue_size=5)
 
         self._resetting = False
@@ -90,7 +92,7 @@ class Test(object):
     def timer_cb(self, event):
         if not self._given_up and rospy.Time.now() - self._last_time > rospy.Duration(10):
             self._given_up = True
-            self.message("Camera %d couldn'd be reset" % self._finger, 0)
+            self.message("Camera %d didn't recover." % self._finger, 0)
             if self._die_on_fail:
                 os.system("killall roslaunch")
                 os.system("killall python")
@@ -119,9 +121,9 @@ if __name__ == "__main__":
     rospy.init_node("camtest")
     rospy.sleep(1)
 
-    n_sensors = 3
-    die_on_fail = False
-    try_reset = True
+    n_sensors = rospy.get_param("~sensor_count", 3)
+    die_on_fail = rospy.get_param("~die_on_fail", True)
+    try_reset = rospy.get_param("~try_reset", True)
 
     hub_reset = CX3HubResetter()
 
