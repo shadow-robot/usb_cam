@@ -1118,7 +1118,6 @@ bool UsbCam::grab_image()
 
   ros::Duration test = got - last_frame_time_;
 
-  //ROS_WARN_STREAM(test);
   last_frame_time_ = got;
 
   if (-1 == r)
@@ -1132,15 +1131,18 @@ bool UsbCam::grab_image()
   if (0 == r)
   {
 
-    ROS_ERROR_STREAM(error_count_ ++ << ": select timeout on "  << camera_dev_);
-    if (error_count_ > 20) exit(EXIT_FAILURE);
+    if (error_count_ > 20)
+    {
+      ROS_ERROR_STREAM(error_count_ << " bad frames on " << camera_dev_);
+      exit(EXIT_FAILURE);
+    }
     else return false;
   }
   else
   {
     if (error_count_)
     {
-      ROS_WARN_STREAM("Good frame on " << camera_dev_);
+      ROS_ERROR_STREAM(error_count_ << " frames late on " << camera_dev_);
       error_count_ = 0;
     }
     read_frame();

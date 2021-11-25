@@ -1,15 +1,21 @@
 <launch>
-  <arg name="viewer" default="false"/>
-  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" respawn="true">
-    <!--<param name="video_device" value="/dev/v4l/by-path/pci-0000:00:14.0-usb-0:2:1.0-video-index0" />-->
-    <param name="video_device" value="/dev/video0" />
+  <arg name="viewer" default="false" />
+  <arg name="finger" default="0" />
+  <arg name="device" default="/dev/v4l/by-id/usb-Shadow_Robot_Co._Distal_sensor_$(arg finger)-video-index0" />
+  
+  <node name="usb_cam_$(arg finger)" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="$(arg device)"/>
     <param name="image_width" value="1280" />
     <param name="image_height" value="480" />
     <param name="pixel_format" value="yuvmono10" />
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
-    <param name="framerate" value="100"/>
+    <param name="framerate" value="50"/>
   </node>
-  <include file="$(find usb_cam)/launch/view.launch" if="$(arg viewer)"/>
+
+  <node if="$(arg viewer)" name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam_$(arg finger)/image_raw"/>
+    <param name="autosize" value="true" />
+  </node>
 
 </launch>
