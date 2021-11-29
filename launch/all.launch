@@ -1,15 +1,22 @@
 <launch>
   <arg name="viewer" default="false"/>
-  <include file="$(find usb_cam)/d.launch">
+  <arg name="respawn" default="false"/>
+  
+  <include file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="0"/>
     <arg name="viewer" value="$(arg viewer)"/>
+    <arg name="respawn" default="false"/>
   </include>
-  <include file="/home/client/d.launch">
+  
+  <include file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="1"/>
     <arg name="viewer" value="$(arg viewer)"/>
+    <arg name="respawn" default="false"/>
   </include>
-  <include file="/home/client/d.launch">
+  
+  <include file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="2"/>
     <arg name="viewer" value="$(arg viewer)"/>
+    <arg name="respawn" default="false"/>
   </include>
 </launch>
