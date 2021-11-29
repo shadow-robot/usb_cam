@@ -1131,7 +1131,7 @@ bool UsbCam::grab_image()
   if (0 == r)
   {
 
-    if (error_count_ > 20)
+    if (++error_count_ > 20)
     {
       ROS_ERROR_STREAM(error_count_ << " bad frames on " << camera_dev_);
       exit(EXIT_FAILURE);
