@@ -1110,7 +1110,7 @@ bool UsbCam::grab_image()
 
   /* Timeout. */
   tv.tv_sec = 0;
-  tv.tv_usec = 1000;
+  tv.tv_usec = 5000;
 
   ros::Time sample = ros::Time::now();
   r = select(fd_ + 1, &fds, NULL, NULL, &tv);
@@ -1131,7 +1131,7 @@ bool UsbCam::grab_image()
   if (0 == r)
   {
 
-    if (++error_count_ > 20)
+    if (++error_count_ > 500)
     {
       ROS_ERROR_STREAM(error_count_ << " bad frames on " << camera_dev_);
       exit(EXIT_FAILURE);
