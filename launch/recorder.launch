@@ -1,0 +1,9 @@
+<launch>
+  <arg name="finger"/>
+  <node name="image_rec_$(arg finger)" pkg="image_view" type="video_recorder" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam_$(arg finger)/image_raw"/>
+    <param name="fps" value="25"/>
+    <!-- <param name="filename" value="asd"/> -->
+  </node>
+
+</launch>

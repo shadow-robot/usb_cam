@@ -11,7 +11,7 @@
     <param name="pixel_format" value="yuvmono10" />
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
-    <param name="framerate" value="30"/>
+    <param name="framerate" value="25"/>
   </node>
 
   <node if="$(arg viewer)" name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
