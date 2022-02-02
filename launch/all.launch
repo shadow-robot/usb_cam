@@ -2,19 +2,24 @@
   <arg name="viewer" default="false"/>
   <arg name="respawn" default="false"/>
   
-  <include file="$(find usb_cam)/launch/d.launch">
+  <arg name="zero" default="true"/>
+  <arg name="one" default="true"/>
+  <arg name="two" default="true"/>
+ 
+  
+  <include if="$(arg zero)" file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="0"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" default="$(arg respawn)"/>
   </include>
   
-  <include file="$(find usb_cam)/launch/d.launch">
+  <include if="$(arg one)" file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="1"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" value="$(arg respawn)"/>
   </include>
   
-  <include file="$(find usb_cam)/launch/d.launch">
+  <include if="$(arg two)" file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="2"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" default="$(arg respawn)"/>
