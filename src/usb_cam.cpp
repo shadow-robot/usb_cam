@@ -1110,7 +1110,7 @@ bool UsbCam::grab_image()
 
   /* Timeout. */
   tv.tv_sec = 0;
-  tv.tv_usec = 1000000/25;
+  tv.tv_usec = 1000000/50;
 
   ros::Time sample = ros::Time::now();
   r = select(fd_ + 1, &fds, NULL, NULL, &tv);
