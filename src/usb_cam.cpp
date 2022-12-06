@@ -316,13 +316,24 @@ void uyvy2rgb(char *YUV, char *RGB, int NumPixels)
 
 static void mono102mono8(char *RAW, char *MONO, int NumPixels)
 {
-  int i, j;
-  for (i = 0, j = 0; i < (NumPixels << 1); i += 2, j += 1)
-  {
-    //first byte is low byte, second byte is high byte; smash together and convert to 8-bit
-    MONO[j] = (unsigned char)(((RAW[i + 0] >> 2) & 0x3F) | ((RAW[i + 1] << 6) & 0xC0));
-  }
+  unsigned short *src = (unsigned short *) RAW;
+  unsigned short *dst = (unsigned short *) MONO;
+  
+  for (int i = 0; i < NumPixels; i++)
+    {
+      *dst++ = (*src++) << 6;
+    }
 }
+// static void mono102mono8(char *RAW, char *MONO, int NumPixels)
+// {
+
+//   int i, j;
+//   for (i = 0, j = 0; i < (NumPixels << 1); i += 2, j += 1)
+//   {
+//     //first byte is low byte, second byte is high byte; smash together and convert to 8-bit
+//     MONO[j] = (unsigned char)(((RAW[i + 0] >> 2) & 0x3F) | ((RAW[i + 1] << 6) & 0xC0));
+//   }
+// }
 
 static void yuyv2rgb(char *YUV, char *RGB, int NumPixels)
 {
@@ -1048,7 +1059,7 @@ void UsbCam::start(const std::string& dev, io_method io_method,
 
   image_->width = image_width;
   image_->height = image_height;
-  image_->bytes_per_pixel = 3;      //corrected 11/10/15 (BYTES not BITS per pixel)
+  image_->bytes_per_pixel = 3;     //corrected 11/10/15 (BYTES not BITS per pixel)
 
   image_->image_size = image_->width * image_->height * image_->bytes_per_pixel;
   image_->is_new = 0;
@@ -1088,7 +1099,7 @@ bool UsbCam::grab_image(sensor_msgs::Image* msg)
   // fill the info
   if (monochrome_)
   {
-    fillImage(*msg, "mono8", image_->height, image_->width, image_->width,
+    fillImage(*msg, "mono16", image_->height, image_->width, 2 * image_->width,
         image_->image);
   }
   else
