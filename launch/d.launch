@@ -11,7 +11,7 @@
     <param name="pixel_format" value="yuvmono10" />
     <param name="camera_frame_id" value="F$(arg finger)_distal" />	
     <param name="io_method" value="mmap"/>
-    <param name="framerate" value="25"/>
+    <param name="framerate" value="50"/>
   </node>
 
   <node if="$(arg viewer)" name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
