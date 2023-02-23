@@ -1,7 +1,8 @@
 <launch>
   <arg name="finger" default="0"/>
     <node name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/usb_cam_$(arg finger)/image_raw"/>
+    <remap from="image" to="/rh_finger/F$(arg finger)/tactiles/distal/image_raw"/>
     <param name="autosize" value="true" />
+
   </node>
 </launch>
