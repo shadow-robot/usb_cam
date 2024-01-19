@@ -1,31 +1,23 @@
 <launch>
-  <arg name="viewer" default="false"/>
+  <arg name="viewer" default="false" />
+  <arg name="finger" default="0" />
+  <arg name="device" default="/dev/v4l/by-id/usb-Shadow_Robot_Co._Distal_sensor_$(arg finger)_50fps-video-index0" />
   <arg name="respawn" default="false"/>
-  <arg name="fps" default="15"/>
-  
-  <arg name="zero" default="true"/>
-  <arg name="one" default="true"/>
-  <arg name="two" default="true"/>
- 
-  
-  <include if="$(arg zero)" file="$(find usb_cam)/launch/d.launch">
-    <arg name="finger" value="0"/>
-    <arg name="viewer" value="$(arg viewer)"/>
-    <arg name="respawn" default="$(arg respawn)"/>
-    <arg name="fps" value="$(arg fps)"/>
-  </include>
-  
-  <include if="$(arg one)" file="$(find usb_cam)/launch/d.launch">
-    <arg name="finger" value="1"/>
-    <arg name="viewer" value="$(arg viewer)"/>
-    <arg name="respawn" value="$(arg respawn)"/>
-    <arg name="fps" value="$(arg fps)"/>
-  </include>
-  
-  <include if="$(arg two)" file="$(find usb_cam)/launch/d.launch">
-    <arg name="finger" value="2"/>
-    <arg name="viewer" value="$(arg viewer)"/>
-    <arg name="respawn" default="$(arg respawn)"/>
-    <arg name="fps" value="$(arg fps)"/>
-  </include>
+  <arg name="fps" default="50"/>
+
+  <node ns="/rh_finger/F$(arg finger)/tactiles" name="distal" pkg="usb_cam" type="usb_cam_node" output="screen" respawn="$(arg respawn)">
+    <param name="video_device" value="$(arg device)"/>
+    <param name="image_width" value="1280" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuvmono10" />
+    <param name="camera_frame_id" value="F$(arg finger)_distal" />
+    <param name="io_method" value="mmap"/>
+    <param name="framerate" value="$(arg fps)"/>
+  </node>
+
+  <node if="$(arg viewer)" name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/rh_finger/F$(arg finger)/tactiles/distal/image_raw"/>
+    <param name="autosize" value="true" />
+  </node>
+
 </launch>
