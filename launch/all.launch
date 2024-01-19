@@ -1,6 +1,7 @@
 <launch>
   <arg name="viewer" default="false"/>
   <arg name="respawn" default="false"/>
+  <arg name="fps" default="15"/>
   
   <arg name="zero" default="true"/>
   <arg name="one" default="true"/>
@@ -11,17 +12,20 @@
     <arg name="finger" value="0"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" default="$(arg respawn)"/>
+    <arg name="fps" value="$(arg fps)"/>
   </include>
   
   <include if="$(arg one)" file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="1"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" value="$(arg respawn)"/>
+    <arg name="fps" value="$(arg fps)"/>
   </include>
   
   <include if="$(arg two)" file="$(find usb_cam)/launch/d.launch">
     <arg name="finger" value="2"/>
     <arg name="viewer" value="$(arg viewer)"/>
     <arg name="respawn" default="$(arg respawn)"/>
+    <arg name="fps" value="$(arg fps)"/>
   </include>
 </launch>
