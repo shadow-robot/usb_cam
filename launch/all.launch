@@ -1,7 +1,7 @@
 <launch>
   <arg name="viewer" default="false"/>
   <arg name="respawn" default="false"/>
-  <arg name="fps" default="15"/>
+  <arg name="fps" default="50"/>
   
   <arg name="zero" default="true"/>
   <arg name="one" default="true"/>
