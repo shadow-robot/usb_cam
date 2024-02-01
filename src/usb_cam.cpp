@@ -1099,7 +1099,7 @@ bool UsbCam::grab_image(sensor_msgs::Image* msg)
   // fill the info
   if (monochrome_)
   {
-    fillImage(*msg, "mono16", image_->height, image_->width, 2 * image_->width,
+    fillImage(*msg, "mono8", image_->height, image_->width, 2 * image_->width,
         image_->image);
   }
   else
