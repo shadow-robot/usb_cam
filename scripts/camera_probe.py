@@ -7,7 +7,7 @@
 import rospy
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int16
-from rh_msgs.srv import RhCameraReset
+from dx_msgs.srv import DxCameraReset
 from std_srvs.srv import Trigger, TriggerResponse
 from time import ctime
 import os
@@ -48,7 +48,7 @@ class Test(object):
 
         if try_reset:
             self._reset = rospy.ServiceProxy(
-                "/rh_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , RhCameraReset)
+                "/dx_finger/F%d/tactiles/F%d_SPARKLE/reset_camera" % (finger, finger) , DxCameraReset)
 
         self._pub = rospy.Publisher("/%s/monitor" % self._namespace, Int16, queue_size=5)
 
