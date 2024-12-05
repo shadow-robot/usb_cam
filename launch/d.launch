@@ -15,9 +15,8 @@
     <param name="framerate" value="$(arg fps)"/>
   </node>
 
-  <node if="$(arg viewer)" name="image_view_$(arg finger)" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/dx_finger/F$(arg finger)/tactiles/distal/image_raw"/>
-    <param name="autosize" value="true" />
-  </node>
+  <include if="$(arg viewer)" file="$(find usb_cam)/launch/view.launch">
+    <arg name="finger" value="$(arg finger)"/>
+  </include>
 
 </launch>
