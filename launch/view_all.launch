@@ -1,0 +1,17 @@
+<launch>
+  <arg name="zero" default="true"/>
+  <arg name="one" default="true"/>
+  <arg name="two" default="true"/>
+
+  <include if="$(arg zero)" file="$(find usb_cam)/launch/view.launch">
+    <arg name="finger" value="0"/>
+  </include>
+
+  <include if="$(arg one)" file="$(find usb_cam)/launch/view.launch">
+    <arg name="finger" value="1"/>
+  </include>
+
+  <include if="$(arg two)" file="$(find usb_cam)/launch/view.launch">
+    <arg name="finger" value="2"/>
+  </include>
+</launch>
